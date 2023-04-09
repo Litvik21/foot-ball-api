@@ -14,5 +14,7 @@ public interface PlayerService {
 
     boolean delete(Long id);
 
-    boolean transfer(Long playerId, String title);
+    boolean transfer(Long playerId, Long newTeamId);
+
+    List<Player> findPlayersByTeamId(Long teamId);
 }

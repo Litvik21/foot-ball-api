@@ -1,11 +1,18 @@
 package stracture.football.repository;
 
 import stracture.football.model.Team;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface TeamRepository extends JpaRepository<Team, Long> {
-    Optional<Team> findTeamByTitle(String title);
+import java.util.List;
+import java.util.Optional;
+
+public interface TeamRepository  {
+    Team save(Team team);
+
+    Team update(Team team);
+
+    Optional<Team> findById(Long id);
+
+    List<Team> findAll();
+
+    void delete(Long id);
 }

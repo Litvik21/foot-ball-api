@@ -1,10 +1,10 @@
-package stracture.football.service;
+package stracture.football.service.impl;
 
 import stracture.football.model.Team;
 import stracture.football.repository.TeamRepository;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
+import stracture.football.service.TeamService;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -21,7 +21,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Team update(Team team) {
-        return repository.save(team);
+        return repository.update(team);
     }
 
     @Override
@@ -37,12 +37,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public boolean delete(Long id) {
-        repository.deleteById(id);
-        return !repository.existsById(id);
-    }
-
-    @Override
-    public Optional<Team> findTeamByTitle(String title) {
-        return repository.findTeamByTitle(title);
+        repository.delete(id);
+        return repository.findById(id).isEmpty();
     }
 }

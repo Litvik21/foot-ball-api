@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import stracture.football.dto.PlayerRequestDto;
 import stracture.football.dto.PlayerResponseDto;
 import stracture.football.model.Player;
+import stracture.football.model.Team;
 import stracture.football.service.TeamService;
 
 @Component
@@ -20,9 +21,7 @@ public class PlayerMapper {
         player.setLastName(dto.lastName());
         player.setBirthDate(dto.birthDate());
         player.setStartCareer(dto.startCareer());
-        if (dto.teamId() != 0) {
-            player.setTeam(teamService.get(dto.teamId()));
-        }
+        player.setTeam(teamService.get(dto.teamId()));
 
         return player;
     }

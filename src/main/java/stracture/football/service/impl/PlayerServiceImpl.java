@@ -1,17 +1,18 @@
-package stracture.football.service;
+package stracture.football.service.impl;
 
 import stracture.football.model.Player;
 import stracture.football.model.Team;
-import stracture.football.repository.PlayerRepository;
+import stracture.football.repository.impl.PlayerRepositoryImpl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
+import stracture.football.service.PlayerService;
+import stracture.football.service.TeamService;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
-    private final PlayerRepository repository;
+    private final PlayerRepositoryImpl repository;
     private final TeamService teamService;
     private static final int MONTHS_IN_YEAR = 12;
     private static final int PERCENTAGE_BASE = 100;
@@ -19,7 +20,7 @@ public class PlayerServiceImpl implements PlayerService {
     private static final BigDecimal ONE = BigDecimal.ONE;
     private static final int EMPTY_BALANCE = 0;
 
-    public PlayerServiceImpl(PlayerRepository repository,
+    public PlayerServiceImpl(PlayerRepositoryImpl repository,
                              TeamService teamService) {
         this.repository = repository;
         this.teamService = teamService;
@@ -32,7 +33,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player update(Player player) {
-        return repository.save(player);
+        return repository.update(player);
     }
 
     @Override
@@ -48,24 +49,26 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public boolean delete(Long id) {
-        repository.deleteById(id);
-        return !repository.existsById(id);
+        repository.delete(id);
+        return repository.findById(id).isEmpty();
     }
 
     @Override
-    public boolean transfer(Long playerId, String title) {
-        Optional<Team> newTeamOfPlayer = teamService.findTeamByTitle(title);
-        if (newTeamOfPlayer.isEmpty()) {
-            throw new RuntimeException("Can't find team by title: " + title);
-        }
+    public boolean transfer(Long playerId, Long newTeamId) {
+        Team newTeamOfPlayer = teamService.get(newTeamId);
         Player player = get(playerId);
         BigDecimal totalCost = calculateTotalCost(player);
-        BigDecimal balanceOfTeamIncludedTransfer = newTeamOfPlayer.get().getBalance().subtract(totalCost);
+        BigDecimal balanceOfTeamIncludedTransfer = newTeamOfPlayer.getBalance().subtract(totalCost);
         if (balanceOfTeamIncludedTransfer.compareTo(BigDecimal.ZERO) < EMPTY_BALANCE) {
             return false;
         }
-        doTransferOperation(newTeamOfPlayer.get(), player, balanceOfTeamIncludedTransfer, totalCost);
+        doTransferOperation(newTeamOfPlayer, player, balanceOfTeamIncludedTransfer, totalCost);
         return true;
+    }
+
+    @Override
+    public List<Player> findPlayersByTeamId(Long teamId) {
+        return repository.findPlayersByTeamId(teamId);
     }
 
     private void doTransferOperation(Team newTeam, Player player,

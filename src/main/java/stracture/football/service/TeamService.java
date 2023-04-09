@@ -14,6 +14,4 @@ public interface TeamService {
     Team get(Long id);
 
     boolean delete(Long id);
-
-    Optional<Team> findTeamByTitle(String title);
 }

@@ -3,7 +3,6 @@ package stracture.football.controller;
 import stracture.football.dto.PlayerRequestDto;
 import stracture.football.dto.PlayerResponseDto;
 import stracture.football.dto.mapper.PlayerMapper;
-import stracture.football.dto.mapper.TeamMapper;
 import stracture.football.model.Player;
 import stracture.football.service.PlayerService;
 import java.util.List;
@@ -13,13 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/players")
 public class PlayersController {
     private final PlayerMapper playerMapper;
-    private final TeamMapper teamMapper;
     private final PlayerService service;
 
-    public PlayersController(PlayerMapper playerMapper, TeamMapper teamMapper,
+    public PlayersController(PlayerMapper playerMapper,
                              PlayerService service) {
         this.playerMapper = playerMapper;
-        this.teamMapper = teamMapper;
         this.service = service;
     }
 
@@ -55,11 +52,10 @@ public class PlayersController {
         return service.delete(id);
     }
 
-    @GetMapping("/transfer/{id}")
+    @PutMapping("/transfer/{id}")
     public boolean transfer(@PathVariable Long id,
-                            @RequestParam("title")
-                            String titleOfNewTeam) {
-        return service.transfer(id, titleOfNewTeam);
+                            @RequestParam("teamId")
+                            Long newTeamId) {
+        return service.transfer(id, newTeamId);
     }
-
 }
