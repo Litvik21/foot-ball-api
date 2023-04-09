@@ -1,7 +1,8 @@
 package stracture.football.dto.mapper;
 
-import stracture.football.dto.TeamRequestDto;
+import stracture.football.dto.TeamCreateRequestDto;
 import stracture.football.dto.TeamResponseDto;
+import stracture.football.dto.TeamUpdateRequestDto;
 import stracture.football.model.Player;
 import stracture.football.model.Team;
 import stracture.football.service.PlayerService;
@@ -22,7 +23,7 @@ public class TeamMapper {
         this.teamService = teamService;
     }
 
-    public Team toModel(TeamRequestDto dto) {
+    public Team toModelWhenCreate(TeamCreateRequestDto dto) {
         Team team = new Team();
         team.setTitle(dto.title());
         team.setCountry(dto.country());
@@ -31,6 +32,33 @@ public class TeamMapper {
         team.setCommission(dto.commission());
 
         return team;
+    }
+
+    public Team toModelWhenUpdate(TeamUpdateRequestDto dto) {
+        Team team = new Team();
+        team.setTitle(dto.title());
+        team.setCountry(dto.country());
+        team.setCity(dto.city());
+        team.setBalance(dto.balance());
+        team.setCommission(dto.commission());
+        team.setPlayers(dto.playerIds()
+                .stream()
+                .map(playerService::get)
+                .toList());
+
+        return team;
+    }
+
+    public TeamResponseDto toDtoWhenUpdate(Team team) {
+        return new TeamResponseDto(
+                team.getId(),
+                team.getTitle(),
+                team.getCountry(),
+                team.getCity(),
+                team.getBalance(),
+                team.getCommission(),
+                team.getPlayers().stream().map(Player::getId).toList()
+        );
     }
 
     public TeamResponseDto toDto(Team team) {
